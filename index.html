@@ -29,8 +29,8 @@
 <p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="calendar"&gt;Lade Daten...&lt;/div&gt;</p>
 <p class="p2"><br></p>
 <p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const API_USERNAME = „fabian97“;<span class="Apple-converted-space">  </span>// Hier deinen MyFXBook-Nutzernamen eintragen</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const API_PASSWORD = "444Gh$v67";<span class="Apple-converted-space">  </span>// Hier dein Passwort eintragen</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const API_USERNAME = "fabian97"; <span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const API_PASSWORD = "444Gh$v67"; <span class="Apple-converted-space"> </span></p>
 <p class="p2"><br></p>
 <p class="p1"><span class="Apple-converted-space">        </span>async function loginMyFXBook() {</p>
 <p class="p1"><span class="Apple-converted-space">            </span>const loginUrl = `https://www.myfxbook.com/api/login.json?username=${API_USERNAME}&amp;password=${API_PASSWORD}`;</p>
@@ -52,8 +52,8 @@
 <p class="p1"><span class="Apple-converted-space">            </span>let events = "";</p>
 <p class="p1"><span class="Apple-converted-space">            </span>data.economicCalendar.forEach(event =&gt; {</p>
 <p class="p1"><span class="Apple-converted-space">                </span>events += `&lt;div class="event"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;${event.date}&lt;/strong&gt; - &lt;span&gt;${event.currency}&lt;/span&gt; - ${event.title} &lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;em&gt;Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}&lt;/em&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;strong&gt;${event.date}&lt;/strong&gt; - &lt;span&gt;${event.currency}&lt;/span&gt; - ${event.title} &lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;em&gt;Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}&lt;/em&gt;</p>
 <p class="p1"><span class="Apple-converted-space">                           </span>&lt;/div&gt;`;</p>
 <p class="p1"><span class="Apple-converted-space">            </span>});</p>
 <p class="p2"><br></p>
