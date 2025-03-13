@@ -3,82 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyFXBook Wirtschaftskalender</title>
+    <title>ForexFactory Wirtschaftskalender</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
-        .event { border-bottom: 1px solid #ddd; padding: 10px 0; }
-        .event strong { color: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #0056b3; color: white; }
     </style>
 </head>
 <body>
-    <h2>Forex Wirtschaftskalender (MyFXBook)</h2>
-    <div id="calendar">Lade Daten...</div>
+    <h2>📊 ForexFactory Wirtschaftskalender für heute</h2>
+    <table id="forex-table">
+        <thead>
+            <tr>
+                <th>Zeit</th>
+                <th>Währung</th>
+                <th>Ereignis</th>
+                <th>Wichtigkeit</th>
+                <th>Vorherig</th>
+                <th>Prognose</th>
+                <th>Tatsächlich</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="7">🔄 Lade Daten...</td></tr>
+        </tbody>
+    </table>
 
     <script>
-        let sessionID = null;
-
-        async function loginMyFXBook() {
-            if (sessionID) {
-                return sessionID; // Falls eine Session existiert, verwende sie.
-            }
-
-            const API_EMAIL = "fabian-firsching@mail.de"; // Jetzt mit "email="
-            const API_PASSWORD = "444Ghv67"; // Falls Sonderzeichen, teste ohne
-
-            const loginUrl = `https://www.myfxbook.com/api/login.json?email=${encodeURIComponent(API_EMAIL)}&password=${encodeURIComponent(API_PASSWORD)}`;
-
+        async function fetchForexFactoryData() {
             try {
-                const response = await fetch(loginUrl);
-                const data = await response.json();
+                const response = await fetch("https://corsproxy.io/?https://www.forexfactory.com/calendar");
+                const text = await response.text();
 
-                if (data.error) {
-                    throw new Error(`API-Login fehlgeschlagen: ${data.message}`);
-                }
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, "text/html");
 
-                sessionID = data.session; // Speichere die Session-ID
-                return sessionID;
-            } catch (error) {
-                console.error("API-Login Fehler:", error);
-                document.getElementById("calendar").innerHTML = "❌ Fehler bei der API-Anmeldung!";
-                return null;
-            }
-        }
+                const today = new Date().toISOString().split("T")[0]; // Aktuelles Datum YYYY-MM-DD
+                const rows = doc.querySelectorAll(".calendar__row"); // Alle Zeilen im Forex-Kalender
 
-        async function loadEconomicCalendar(session) {
-            const url = `https://www.myfxbook.com/api/get-economic-calendar.json?session=${session}`;
+                let tableContent = "";
+                rows.forEach(row => {
+                    const time = row.querySelector(".calendar__time")?.innerText.trim();
+                    const currency = row.querySelector(".calendar__currency")?.innerText.trim();
+                    const event = row.querySelector(".calendar__event")?.innerText.trim();
+                    const impact = row.querySelector(".calendar__impact span")?.className || "Low";
+                    const previous = row.querySelector(".calendar__previous")?.innerText.trim() || "N/A";
+                    const forecast = row.querySelector(".calendar__forecast")?.innerText.trim() || "N/A";
+                    const actual = row.querySelector(".calendar__actual")?.innerText.trim() || "N/A";
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+                    if (time && event) {
+                        let impactText = impact.includes("high") ? "🔴 Hoch" :
+                                         impact.includes("moderate") ? "🟡 Mittel" : "🟢 Gering";
 
-                if (!data.economicCalendar) {
-                    document.getElementById("calendar").innerHTML = "⚠ Keine Wirtschaftsdaten verfügbar.";
-                    return;
-                }
-
-                let events = "";
-                data.economicCalendar.forEach(event => {
-                    events += `<div class="event">
-                                    <strong>${event.date}</strong> - <span>${event.currency}</span> - ${event.title} <br>
-                                    <em>Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}</em>
-                               </div>`;
+                        tableContent += `
+                            <tr>
+                                <td>${time}</td>
+                                <td>${currency}</td>
+                                <td>${event}</td>
+                                <td>${impactText}</td>
+                                <td>${previous}</td>
+                                <td>${forecast}</td>
+                                <td>${actual}</td>
+                            </tr>
+                        `;
+                    }
                 });
 
-                document.getElementById("calendar").innerHTML = events;
+                document.querySelector("#forex-table tbody").innerHTML = tableContent || "<tr><td colspan='7'>⚠ Keine Daten gefunden.</td></tr>";
+
             } catch (error) {
-                console.error("Fehler beim Laden des Wirtschaftskalenders:", error);
-                document.getElementById("calendar").innerHTML = "❌ Fehler beim Laden der Wirtschaftsdaten.";
+                console.error("❌ Fehler beim Laden der Forex-Daten:", error);
+                document.querySelector("#forex-table tbody").innerHTML = "<tr><td colspan='7'>❌ Fehler beim Laden der Daten.</td></tr>";
             }
         }
 
-        async function fetchData() {
-            const session = await loginMyFXBook();
-            if (session) {
-                loadEconomicCalendar(session);
-            }
-        }
-
-        fetchData();
+        fetchForexFactoryData();
     </script>
 </body>
 </html>
