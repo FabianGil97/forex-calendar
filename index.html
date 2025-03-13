@@ -15,25 +15,31 @@
     <div id="calendar">Lade Daten...</div>
 
     <script>
-        // 🔹 Hier deine Zugangsdaten eingeben (Sicherheits-Tipp: Nicht in den Code schreiben!)
-        const API_USERNAME = "fabian-firsching@mail.de";  // Ersetze mit deinem MyFXBook-Nutzernamen
-        const API_PASSWORD = "444Gh$v67";  // Ersetze mit deinem Passwort
+        let sessionID = null;
 
         async function loginMyFXBook() {
-            const loginUrl = `https://www.myfxbook.com/api/login.json?username=${encodeURIComponent(API_USERNAME)}&password=${encodeURIComponent(API_PASSWORD)}`;
+            if (sessionID) {
+                return sessionID; // Falls eine Session existiert, verwende sie.
+            }
+
+            const API_EMAIL = "fabian-firsching@mail.de"; // Jetzt mit "email="
+            const API_PASSWORD = "444Ghv67"; // Falls Sonderzeichen, teste ohne
+
+            const loginUrl = `https://www.myfxbook.com/api/login.json?email=${encodeURIComponent(API_EMAIL)}&password=${encodeURIComponent(API_PASSWORD)}`;
 
             try {
                 const response = await fetch(loginUrl);
                 const data = await response.json();
-                
+
                 if (data.error) {
-                    throw new Error(`API-Login fehlgeschlagen: ${data.error}`);
+                    throw new Error(`API-Login fehlgeschlagen: ${data.message}`);
                 }
-                
-                return data.session;
+
+                sessionID = data.session; // Speichere die Session-ID
+                return sessionID;
             } catch (error) {
                 console.error("API-Login Fehler:", error);
-                document.getElementById("calendar").innerHTML = "❌ Fehler bei der API-Anmeldung. Überprüfe deine Zugangsdaten!";
+                document.getElementById("calendar").innerHTML = "❌ Fehler bei der API-Anmeldung!";
                 return null;
             }
         }
