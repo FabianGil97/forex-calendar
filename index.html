@@ -1,77 +1,62 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyFXBook Wirtschaftskalender</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .event { border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .event strong { color: #0056b3; }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="de"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;MyFXBook Wirtschaftskalender&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: Arial, sans-serif; padding: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.event { border-bottom: 1px solid #ddd; padding: 10px 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.event strong { color: #0056b3; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Forex Wirtschaftskalender (MyFXBook)&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="calendar"&gt;Lade Daten...&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const API_USERNAME = "fabian97"; <span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const API_PASSWORD = "444Gh$v67"; <span class="Apple-converted-space"> </span></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>async function loginMyFXBook() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const loginUrl = `https://www.myfxbook.com/api/login.json?username=${API_USERNAME}&amp;password=${API_PASSWORD}`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const response = await fetch(loginUrl);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const data = await response.json();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return data.session ? data.session : null;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>async function loadEconomicCalendar(session) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const url = `https://www.myfxbook.com/api/get-economic-calendar.json?session=${session}`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const response = await fetch(url);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const data = await response.json();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (!data.economicCalendar) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById("calendar").innerHTML = "Keine Daten verfügbar.";</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>let events = "";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>data.economicCalendar.forEach(event =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>events += `&lt;div class="event"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;strong&gt;${event.date}&lt;/strong&gt; - &lt;span&gt;${event.currency}&lt;/span&gt; - ${event.title} &lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;em&gt;Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}&lt;/em&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                           </span>&lt;/div&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("calendar").innerHTML = events;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>async function fetchData() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const session = await loginMyFXBook();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (session) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>loadEconomicCalendar(session);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById("calendar").innerHTML = "Fehler bei der API-Anmeldung.";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>fetchData();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <h2>Forex Wirtschaftskalender (MyFXBook)</h2>
+    <div id="calendar">Lade Daten...</div>
+
+    <script>
+        const API_USERNAME = "fabian97";  
+        const API_PASSWORD = "444Gh$v67";  
+
+        async function loginMyFXBook() {
+            const loginUrl = `https://www.myfxbook.com/api/login.json?username=${API_USERNAME}&password=${API_PASSWORD}`;
+            const response = await fetch(loginUrl);
+            const data = await response.json();
+            return data.session ? data.session : null;
+        }
+
+        async function loadEconomicCalendar(session) {
+            const url = `https://www.myfxbook.com/api/get-economic-calendar.json?session=${session}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!data.economicCalendar) {
+                document.getElementById("calendar").innerHTML = "Keine Daten verfügbar.";
+                return;
+            }
+
+            let events = "";
+            data.economicCalendar.forEach(event => {
+                events += `<div class="event">
+                                <strong>${event.date}</strong> - <span>${event.currency}</span> - ${event.title} <br>
+                                <em>Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}</em>
+                           </div>`;
+            });
+
+            document.getElementById("calendar").innerHTML = events;
+        }
+
+        async function fetchData() {
+            const session = await loginMyFXBook();
+            if (session) {
+                loadEconomicCalendar(session);
+            } else {
+                document.getElementById("calendar").innerHTML = "Fehler bei der API-Anmeldung.";
+            }
+        }
+
+        fetchData();
+    </script>
 </body>
 </html>
