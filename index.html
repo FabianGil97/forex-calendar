@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -16,43 +15,60 @@
     <div id="calendar">Lade Daten...</div>
 
     <script>
-        const API_USERNAME = "fabian97";  
-        const API_PASSWORD = "444Gh$v67";  
+        // 🔹 Hier deine Zugangsdaten eingeben (Sicherheits-Tipp: Nicht in den Code schreiben!)
+        const API_USERNAME = "fabian97";  // Ersetze mit deinem MyFXBook-Nutzernamen
+        const API_PASSWORD = "444Gh$v67";  // Ersetze mit deinem Passwort
 
         async function loginMyFXBook() {
-            const loginUrl = `https://www.myfxbook.com/api/login.json?username=${API_USERNAME}&password=${API_PASSWORD}`;
-            const response = await fetch(loginUrl);
-            const data = await response.json();
-            return data.session ? data.session : null;
+            const loginUrl = `https://www.myfxbook.com/api/login.json?username=${encodeURIComponent(API_USERNAME)}&password=${encodeURIComponent(API_PASSWORD)}`;
+
+            try {
+                const response = await fetch(loginUrl);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(`API-Login fehlgeschlagen: ${data.error}`);
+                }
+                
+                return data.session;
+            } catch (error) {
+                console.error("API-Login Fehler:", error);
+                document.getElementById("calendar").innerHTML = "❌ Fehler bei der API-Anmeldung. Überprüfe deine Zugangsdaten!";
+                return null;
+            }
         }
 
         async function loadEconomicCalendar(session) {
             const url = `https://www.myfxbook.com/api/get-economic-calendar.json?session=${session}`;
-            const response = await fetch(url);
-            const data = await response.json();
 
-            if (!data.economicCalendar) {
-                document.getElementById("calendar").innerHTML = "Keine Daten verfügbar.";
-                return;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (!data.economicCalendar) {
+                    document.getElementById("calendar").innerHTML = "⚠ Keine Wirtschaftsdaten verfügbar.";
+                    return;
+                }
+
+                let events = "";
+                data.economicCalendar.forEach(event => {
+                    events += `<div class="event">
+                                    <strong>${event.date}</strong> - <span>${event.currency}</span> - ${event.title} <br>
+                                    <em>Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}</em>
+                               </div>`;
+                });
+
+                document.getElementById("calendar").innerHTML = events;
+            } catch (error) {
+                console.error("Fehler beim Laden des Wirtschaftskalenders:", error);
+                document.getElementById("calendar").innerHTML = "❌ Fehler beim Laden der Wirtschaftsdaten.";
             }
-
-            let events = "";
-            data.economicCalendar.forEach(event => {
-                events += `<div class="event">
-                                <strong>${event.date}</strong> - <span>${event.currency}</span> - ${event.title} <br>
-                                <em>Impact: ${event.impact}, Vorherige: ${event.previous}, Prognose: ${event.forecast}</em>
-                           </div>`;
-            });
-
-            document.getElementById("calendar").innerHTML = events;
         }
 
         async function fetchData() {
             const session = await loginMyFXBook();
             if (session) {
                 loadEconomicCalendar(session);
-            } else {
-                document.getElementById("calendar").innerHTML = "Fehler bei der API-Anmeldung.";
             }
         }
 
